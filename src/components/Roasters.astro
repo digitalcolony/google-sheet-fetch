@@ -1,0 +1,37 @@
+---
+const res = await fetch('https://script.google.com/macros/s/AKfycbwoGRVfgJ8d0Ozx7pn8_IgwfFZSXJgLD5sAfN-u8vWkWiq80rP_i7imWU80Chh4BGj8/exec');
+const {data} = await res.json();
+
+// create an array of unique states and the count of each that appears in the data
+const states = data.reduce((acc, cur) => {
+	const state = cur.state;
+	if (acc[state]) {
+		acc[state] += 1;
+	} else {
+		acc[state] = 1;
+	}
+	return acc;
+}, {});
+
+// sort the states by count descending
+const sortedStates = Object.keys(states).sort((a, b) => states[b] - states[a]);
+
+// create an object array of states and counts
+const stateCounts = sortedStates.map((state) => {
+	return {
+		state,
+		count: states[state]
+	};
+});
+---
+<h3>Coffee Roasters Ordered by State</h3>
+
+		<div class="grid-container">
+			{stateCounts.map ((r) => <div class="grid-item">{r.state}: {r.count}</div>		)}
+		</div>
+	
+
+		<h3>Coffee Roasters with Location</h3>
+		<div class="grid-container">
+			{data.map ((r) => <div  class="grid-item">{r.roaster} - {r.location}</div>		)}
+		</div>
